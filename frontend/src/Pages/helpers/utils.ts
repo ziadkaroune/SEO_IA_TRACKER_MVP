@@ -1,3 +1,5 @@
+//utils
+
 export const getScoreColor = (score: number) => {
   if (score >= 80) return 'text-emerald-400'
   if (score >= 60) return 'text-yellow-400'
