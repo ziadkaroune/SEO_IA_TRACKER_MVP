@@ -82,7 +82,7 @@ Return ONLY this JSON, no text outside:
 }
   `.trim();
 };
-// scoriing prompt
+// scoring prompt
 export const buildScoringPrompt = (domaine_info, SimulationPrompt) => {
   const { brand, competitors } = domaine_info;
   const  simulations  = SimulationPrompt.simulations;
