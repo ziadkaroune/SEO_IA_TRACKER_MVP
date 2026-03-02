@@ -40,6 +40,12 @@ async function askLLM(prompt) {
  return reponse;
 }
 
+//function to simulate search engines quueries ( chatgpt , gemini , perplixity )
+async function simulationMoteurRecherche(domaine_info){
+const reponse = await askLLM(buildSimulationPrompt(domaine_info));
+return reponse
+
+}
 
 
 
