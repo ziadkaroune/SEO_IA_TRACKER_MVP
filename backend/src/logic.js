@@ -46,6 +46,12 @@ const reponse = await askLLM(buildSimulationPrompt(domaine_info));
 return reponse
 
 }
+// analyse queries and add a system to calculate score and categorise the important ones
+async function score_system(domaine_info , sm_moteur_recherche){
+const response = await askLLM(buildScoringPrompt(domaine_info , sm_moteur_recherche));
+return response;
+}
+
 
 
 
