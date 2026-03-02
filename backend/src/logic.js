@@ -31,4 +31,15 @@ async function askLLM(prompt) {
     throw new Error(`llama returned invalid JSON:\n${raw}`);
   }
 }
- 
+
+// pipline
+
+// function to get domaine name infos ( category , sector , competitors  ...)
+ async function getDomaineInfo(domain){
+ const reponse  = await askLLM(prompt_domaine_info(domain));
+ return reponse;
+}
+
+
+
+
