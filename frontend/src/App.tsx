@@ -1,7 +1,7 @@
  
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import AnalyserPage from './AnalyserPage'
-import  HomePage  from './HomePage'
+import AnalyserPage from './Pages/AnalyserPage'
+import  HomePage  from './Pages/HomePage'
 function App() {
   return (
     <BrowserRouter>
