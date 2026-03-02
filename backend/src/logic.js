@@ -1,7 +1,8 @@
 import axios from 'axios'
 import 'dotenv/config'
- 
-
+import {prompt_domain_infos} from './prompts.js'
+import  {buildSimulationPrompt} from './prompts.js'
+import  {buildScoringPrompt} from './prompts.js'
 
 const API_URL = process.env.API_URL;
 const API_KEY = process.env.API_KEY;
@@ -36,20 +37,20 @@ async function askLLM(prompt) {
 
 // 1 - Function to get domaine name infos ( category , sector , competitors  ...)
  async function getDomaineInfo(domain){
- const reponse  = await askLLM(prompt_domaine_info(domain));
- return reponse;
+  return  await askLLM(prompt_domain_infos(domain));
+
 }
 
 // 2 - Function to simulate search engines quueries ( chatgpt , gemini , perplixity )
 async function simulationMoteurRecherche(domaine_info){
-const reponse = await askLLM(buildSimulationPrompt(domaine_info));
-return reponse
+ return  await askLLM(buildSimulationPrompt(domaine_info));
+ 
 
 }
 //  3 - Analyse queries and add a system to calculate score and categorise the important ones
 async function score_system(domaine_info , sm_moteur_recherche){
-const response = await askLLM(buildScoringPrompt(domaine_info , sm_moteur_recherche));
-return response;
+ return  await askLLM(buildScoringPrompt(domaine_info , sm_moteur_recherche));
+
 }
 
 /// main function of the pipline
