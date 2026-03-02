@@ -1,6 +1,6 @@
 
-// prompt to get domaine infos  (sector , competitors , queries ...)
-export const prompt_domaine_info = (domain)=> {
+// prompt to get domain infos  (sector , competitors , queries ...)
+export const prompt_domain_infos = (domain)=> {
     
     return `
 You are a senior brand analyst and SEO strategist.
@@ -32,3 +32,53 @@ Expected format:
 }
 `  }
  
+//prompt to simulate search engines queries
+export const buildSimulationPrompt = (domain_info) => {
+  const { brand, sector, competitors, queries } = domain_info;
+
+  const queriesList = queries
+    .map((q, i) => `${i + 1}. ${q}`)
+    .join("\n");
+
+  const competitorsList = competitors.join(", ");
+
+  return `
+You are simulating 3 different AI search engines responding 
+to user queries about ${sector}.
+
+Each engine has a distinct personality:
+
+CHATGPT → Structured, numbered lists, direct and confident, 
+           recommends clearly without hesitation
+
+GEMINI  → Comparative and nuanced, explains trade-offs,
+           contextual recommendations based on user needs
+
+PERPLEXITY → Data-driven, cites real prices, ratings, 
+              subscriber counts and concrete numbers
+
+Respond to ALL ${queries.length} queries below as each engine.
+Each response must be 3-5 sentences, realistic and natural.
+Naturally mention ${brand} and competitors (${competitorsList}) when relevant.
+Do NOT favor any brand artificially.
+
+Queries:
+${queriesList}
+
+Return ONLY this JSON, no text outside:
+
+{
+  "simulations": {
+    "chatgpt": [
+      ${queries.map(q => `{ "query": "${q}", "response": "..." }`).join(",\n      ")}
+    ],
+    "gemini": [
+      ${queries.map(q => `{ "query": "${q}", "response": "..." }`).join(",\n      ")}
+    ],
+    "perplexity": [
+      ${queries.map(q => `{ "query": "${q}", "response": "..." }`).join(",\n      ")}
+    ]
+  }
+}
+  `.trim();
+};
