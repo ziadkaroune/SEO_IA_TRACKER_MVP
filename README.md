@@ -11,8 +11,6 @@
 6. [Data Flow](#data-flow)
 7. [Extensibility](#extensibility)
 8. [Setup & Usage](#setup--usage)
-9. [Contributing](#contributing)
-10. [License](#license)
 
 ---
 
