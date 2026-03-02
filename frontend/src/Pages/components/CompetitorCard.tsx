@@ -1,3 +1,4 @@
+//CompetitorCard
 import type { Competitor } from '../../types'
 
 interface Props {

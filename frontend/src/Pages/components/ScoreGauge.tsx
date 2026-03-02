@@ -1,3 +1,4 @@
+//ScoreGauge
 import { getScoreColor } from '../helpers/utils'
 
 interface Props {

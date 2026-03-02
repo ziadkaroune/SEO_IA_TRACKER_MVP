@@ -1,3 +1,4 @@
+//QueryRow
 import type { QueryAnalysis } from '../../types'
 import { getSentimentStyle, positionLabel } from '../helpers/utils'
 
