@@ -12,7 +12,8 @@ app.use(cors());
 app.post('/analyse' , async(req , res)=>{
     try{
         const {domain} = req.body;
-       
+        if (!domain) 
+                return res.status(400).json({ error: "Domain is required" });
     
         const result = await analyzeVisibility(domain);
         if(!result)
