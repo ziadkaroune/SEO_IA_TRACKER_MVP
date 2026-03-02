@@ -172,14 +172,6 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## Contributing
 
-Contributions are welcome! Please open issues or submit pull requests for improvements, bug fixes, or new features.
-
----
-
-## License
-
-MIT License
 
 
