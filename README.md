@@ -1,92 +1,185 @@
-# AI Visibility Tracker
+
+# AI Visibility Tracker — MVP Documentation
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Backend Pipeline](#backend-pipeline)
+4. [API Reference](#api-reference)
+5. [Frontend](#frontend)
+6. [Data Flow](#data-flow)
+7. [Extensibility](#extensibility)
+8. [Setup & Usage](#setup--usage)
+9. [Contributing](#contributing)
+10. [License](#license)
+
+---
 
 ## Overview
 
-AI Visibility Tracker is a full-stack application for analyzing, comparing, and visualizing the visibility and performance of AI-powered search engines and competitors. The backend features a robust pipeline that leverages LLMs to extract domain insights, simulate search engine queries, and score visibility across multiple engines. The app provides actionable recommendations and deep analysis for teams optimizing their AI strategies.
+AI Visibility Tracker is a full-stack MVP for analyzing, scoring, and visualizing how brands and competitors are mentioned by major AI search engines (ChatGPT, Gemini, Perplexity). It provides actionable recommendations to improve AI-driven search visibility.
 
-## Features
+---
 
-- **Automated Domain Analysis:** Extracts domain info (category, sector, competitors) using LLMs.
-- **Search Engine Simulation:** Simulates queries across engines (ChatGPT, Gemini, Perplexity) for realistic visibility analysis.
-- **Scoring & Categorization:** Analyzes and scores queries, highlighting the most impactful ones.
-- **Competitor Comparison:** Benchmarks visibility and performance against competitors.
-- **Actionable Recommendations:** Provides optimization suggestions based on analysis.
-- **Interactive Dashboard:** Modern UI for visualizing scores, trends, and recommendations.
+## Architecture
 
-## Tech Stack
+**Tech Stack:**
+- Frontend: React, TypeScript, Vite
+- Backend: Node.js, Express
+- LLM Integration: External API (configurable)
 
-- **Frontend:** React, TypeScript, Vite
-- **Backend:** Node.js
-- **Styling:** CSS
+**Structure:**
+- `frontend/` — UI, pages, components, types
+- `backend/` — API server, pipeline logic, prompt engineering
 
-## Project Structure
+---
 
-- `frontend/` — React app (UI, pages, components)
-- `backend/` — Node.js server (core logic, API, prompt engineering)
+## Backend Pipeline
 
-## Getting Started
+The backend orchestrates a multi-step analysis pipeline:
+
+### 1. Domain Info Extraction
+- Uses an LLM to extract:
+	- Brand name
+	- Business sector
+	- Top 5 real competitors
+	- 10 high-intent SEO queries
+- Prompt: See `prompts.js` (`prompt_domain_infos`)
+
+### 2. Search Engine Simulation
+- Simulates how ChatGPT, Gemini, and Perplexity would answer each query
+- Each engine has a distinct style/personality
+- Prompt: See `prompts.js` (`buildSimulationPrompt`)
+
+### 3. Scoring & Categorization
+- For each engine/query response:
+	- Detect if brand is cited
+	- Position (first, second, third, absent)
+	- Sentiment (positive, neutral, negative, absent)
+	- Competitors cited before brand
+- Scores calculated per engine and globally
+- Prompt: See `prompts.js` (`buildScoringPrompt`)
+
+### 4. Recommendations
+- LLM generates 5 actionable recommendations
+	- Prioritized: urgent, medium, structural
+	- References queries where brand is absent
+
+### 5. Aggregation & Response
+- Returns full analysis, scores, competitor ranking, recommendations
+- See `analyzeVisibility(domain)` in `logic.js`
+
+---
+
+## API Reference
+
+### POST `/analyse`
+
+**Request:**
+```json
+{
+	"domain": "monday.com"
+}
+```
+
+**Response:**
+```json
+{
+	"brand": "Monday.com",
+	"analysis": {
+		"chatgpt": [ { ... } ],
+		"gemini": [ { ... } ],
+		"perplexity": [ { ... } ]
+	},
+	"scores": {
+		"chatgpt": 87,
+		"gemini": 75,
+		"perplexity": 80,
+		"global": 81
+	},
+	"top_competitors": [ { "name": "Asana", "appearances_before_brand": 3 }, ... ],
+	"recommendations": [ { "priority": "urgent", "action": "..." }, ... ]
+}
+```
+
+---
+
+## Frontend
+
+- **HomePage:**
+	- Input domain, trigger analysis
+	- Shows stats, loading state, error handling
+- **AnalyserPage:**
+	- Displays brand, domain, scores (global & per engine)
+	- Query analysis grid (cited/absent per engine)
+	- Top competitors ranked by appearances before brand
+	- Actionable recommendations
+- **Components:**
+	- ScoreGauge, EngineScore, QueryRow, CompetitorCard, RecommendationCard
+
+---
+
+## Data Flow
+
+1. User enters domain in frontend
+2. Frontend POSTs to `/analyse` API
+3. Backend runs pipeline:
+	 - Extracts domain info
+	 - Simulates engine responses
+	 - Scores/categorizes results
+	 - Generates recommendations
+4. Backend returns full analysis
+5. Frontend visualizes results (scores, queries, competitors, recommendations)
+
+---
+
+## Extensibility
+
+- **Add more engines:**
+	- Extend prompts and scoring logic
+- **Custom queries:**
+	- Allow user-defined queries
+- **Advanced scoring:**
+	- Refine sentiment/position algorithms
+- **Integrate real search APIs:**
+	- Replace LLM simulation with live data
+- **User accounts:**
+	- Save and track historical analyses
+
+---
+
+## Setup & Usage
 
 ### Prerequisites
-
 - Node.js (v18+ recommended)
 - npm
 
 ### Installation
+```bash
+git clone https://github.com/yourusername/ai-visibility-tracker.git
+cd ai-visibility-tracker
+cd backend && npm install
+cd ../frontend && npm install
+```
 
-1. **Clone the repository:**
-	```bash
-	git clone https://github.com/yourusername/ai-visibility-tracker.git
-	cd ai-visibility-tracker
-	```
+### Running
+```bash
+cd backend && node src/index.js
+cd frontend && npm run dev
+```
+Open `http://localhost:5173` in your browser.
 
-2. **Install dependencies:**
-	```bash
-	cd backend && npm install
-	cd ../frontend && npm install
-	```
+---
 
-### Running the App
+## Contributing
 
-1. **Start the backend:**
-	```bash
-	cd backend && node src/index.js
-	```
+Contributions are welcome! Please open issues or submit pull requests for improvements, bug fixes, or new features.
 
-2. **Start the frontend:**
-	```bash
-	cd frontend && npm run dev
-	```
+---
 
-3. **Open in browser:**
-	Navigate to `http://localhost:5173` (or the port shown in terminal).
+## License
 
-## Usage
-
-### Backend Pipeline
-
-The backend logic is built around a multi-step pipeline:
-
-1. **Domain Info Extraction:**
-	- Uses LLMs to extract domain details (category, sector, competitors).
-2. **Search Engine Simulation:**
-	- Simulates queries on major AI engines (ChatGPT, Gemini, Perplexity) for the domain.
-3. **Scoring System:**
-	- Analyzes and scores the simulated queries, categorizing the most important ones for visibility.
-4. **Result Aggregation:**
-	- Returns a comprehensive visibility score and recommendations for the domain.
-
-### What the App Can Do
-
-- Analyze any domain for AI search visibility.
-- Simulate and compare results across multiple AI engines.
-- Score and categorize queries for impact.
-- Benchmark against competitors.
-- Provide actionable recommendations for improving visibility.
-
-### Frontend
-
-- Access the dashboard to view competitor scores and recommendations.
-- Add or modify queries to analyze new search terms.
-- Review engine scores and recommendations for optimization.
+MIT License
 
 
